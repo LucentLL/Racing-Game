@@ -214,11 +214,18 @@ const loader=new GLTFLoader(mgr);
 // Load NFS Metropolis as city scenery
 loader.load('metropolis.glb', gltf=>{
   const track=gltf.scene;
-  const sc=0.15;
+  const sc=0.12;
   track.scale.set(sc,sc,sc);
-  track.position.set(437*sc, -96*sc, -277*sc);
+  // Center track at origin, ground level
+  track.position.set(437*sc, 0, -277*sc);
+  track.traverse(child=>{
+    if(child.isMesh){
+      child.castShadow=false;
+      child.receiveShadow=false;
+    }
+  });
   scene.add(track);
-  console.log('Metropolis track loaded');
+  console.log('Metropolis track loaded!');
 }, undefined, err=>console.error('Track load error:',err));
 loader.setDRACOLoader&&void 0;
 // Patch the file loader used internally
