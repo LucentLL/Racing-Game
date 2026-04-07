@@ -176,19 +176,8 @@ const block2_GLB=null;
 
 // Road loading deferred until after GLTFLoader is created (see below)
 
-// ===== BUILDINGS (NFS Metropolis Track) =====
+// ===== BUILDINGS (NFS Metropolis Track - loaded after GLTFLoader init) =====
 const bldgs=[];
-// Load NFS Metropolis as city scenery
-loader.load('metropolis.glb', gltf=>{
-  const track=gltf.scene;
-  // Center the track: bounds center is approx (-437, 96, 277)
-  track.position.set(437*0.15, -96*0.15, -277*0.15);
-  // Scale to fit game world (~500 units across, track is ~3400)
-  const sc=0.15;
-  track.scale.set(sc,sc,sc);
-  scene.add(track);
-  console.log('Metropolis track loaded');
-}, undefined, err=>console.error('Track load error:',err));
 
 // Streetlight glows
 const gwM=new THREE.MeshBasicMaterial({color:0xffcc88}),gwG=new THREE.SphereGeometry(0.2,4,4);
@@ -221,6 +210,16 @@ class DataURILoader extends THREE.FileLoader {
   }
 }
 const loader=new GLTFLoader(mgr);
+
+// Load NFS Metropolis as city scenery
+loader.load('metropolis.glb', gltf=>{
+  const track=gltf.scene;
+  const sc=0.15;
+  track.scale.set(sc,sc,sc);
+  track.position.set(437*sc, -96*sc, -277*sc);
+  scene.add(track);
+  console.log('Metropolis track loaded');
+}, undefined, err=>console.error('Track load error:',err));
 loader.setDRACOLoader&&void 0;
 // Patch the file loader used internally
 const origLoad=THREE.FileLoader.prototype.load;
