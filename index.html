@@ -176,26 +176,19 @@ const block2_GLB=null;
 
 // Road loading deferred until after GLTFLoader is created (see below)
 
-// ===== BUILDINGS =====
+// ===== BUILDINGS (NFS Metropolis Track) =====
 const bldgs=[];
-['#060810','#080a14','#0a0810','#060a0e','#070812'].forEach(col=>{
-const tex=makeBldgTex(col),mat=new THREE.MeshLambertMaterial({map:tex,emissiveMap:tex,emissive:0xffffff,emissiveIntensity:0.4});
-const geo=new THREE.BoxGeometry(1,1,1),data=[];
-for(let bx=-GR;bx<GR;bx++){for(let bz=-GR;bz<GR;bz++){
-const cx=bx*(BLK+RD)+(BLK+RD)/2,cz=bz*(BLK+RD)+(BLK+RD)/2;
-for(let k=0;k<8;k++){
-if(Math.random()>0.7)continue;
-const w=8+Math.random()*15,d=8+Math.random()*15,h=8+Math.random()*45;
-const ox=(Math.random()-0.5)*(BLK-w),oz=(Math.random()-0.5)*(BLK-d);
-data.push({px:cx+ox,pz:cz+oz,w,d,h});
-bldgs.push({x:cx+ox,z:cz+oz,hw:w/2+0.8,hd:d/2+0.8});
-}}}
-if(!data.length)return;
-const inst=new THREE.InstancedMesh(geo,mat,data.length);
-const m4=new THREE.Matrix4(),q0=new THREE.Quaternion();
-data.forEach((b,i)=>{m4.compose(new THREE.Vector3(b.px,b.h/2,b.pz),q0,new THREE.Vector3(b.w,b.h,b.d));inst.setMatrixAt(i,m4)});
-inst.instanceMatrix.needsUpdate=true;scene.add(inst);
-});
+// Load NFS Metropolis as city scenery
+loader.load('metropolis.glb', gltf=>{
+  const track=gltf.scene;
+  // Center the track: bounds center is approx (-437, 96, 277)
+  track.position.set(437*0.15, -96*0.15, -277*0.15);
+  // Scale to fit game world (~500 units across, track is ~3400)
+  const sc=0.15;
+  track.scale.set(sc,sc,sc);
+  scene.add(track);
+  console.log('Metropolis track loaded');
+}, undefined, err=>console.error('Track load error:',err));
 
 // Streetlight glows
 const gwM=new THREE.MeshBasicMaterial({color:0xffcc88}),gwG=new THREE.SphereGeometry(0.2,4,4);
