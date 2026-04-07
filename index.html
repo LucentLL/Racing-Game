@@ -301,7 +301,7 @@ Promise.all([
   console.log('Road pack loaded');
 });
 
-if(!CAR_BODY_JSON){
+if(false){ // disabled - car loaded from external file
   // Procedural fallback car
   const body=new THREE.Mesh(new THREE.BoxGeometry(2,0.8,3.5),new THREE.MeshStandardMaterial({color:0xff3333,metalness:0.7,roughness:0.3}));
   body.position.y=0.6;
